@@ -38,10 +38,24 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        // prendo quello che mi arrivata dal form
         $dati= $request->all();
+        // creo un istanza e uso quello che è arrivato dal form per completarla con la funzione fill()
         $post= new Post();
         $post->fill($dati);
-        $post->slug = Str::slug($dati['title']);
+
+        $slug_originale = Str::slug($dati['title']);
+        $slug= $slug_originale;
+        // verifico che nel db non esiste uno slug uguale
+        $post_stesso_slug = Post::where('slug' , $slug)->first();
+        $slug_trovati = 1;
+        while (!empty($post_stesso_slug)) {
+            $slug= $slug_originale . '-' . $slug_trovati;
+            $post_stesso_slug = Post::where('slug' , $slug)->first();
+            $slug_trovati++;
+        }
+        $post->slug=$slug;
+
         $post->save();
         return redirect()->route('admin.posts.index');
 
@@ -65,9 +79,10 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function edit(Post $post)
+    public function edit(Post $post /*$id*/)
     {
-        //
+        // $post = Post::find($id);
+        return view('admin.posts.edit', ['post'=> $post]);
     }
 
     /**
@@ -79,7 +94,14 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        // prendo quello che mi arrivata dal form
+        $dati= $request->all();
+
+        // $post->fill($dati);
+        // $post->save();
+        // se $post contiene già i id significa che esisteva già e fa update altrimenti fa inserisci
+        $post->update($dati);
+        return redirect()->route('admin.posts.index');
     }
 
     /**
@@ -90,6 +112,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
+        return redirect()->route('admin.posts.index');
     }
 }
