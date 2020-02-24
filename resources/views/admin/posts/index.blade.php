@@ -15,6 +15,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Titolo</th>
+                            <th>Categoria</th>
                             <th>Slug</th>
                             <th>Autore</th>
                             <th>Azioni</th>
@@ -27,6 +28,7 @@
                         <tr>
                             <td>{{$post->id}}</td>
                             <td>{{$post->title}}</td>
+                            <td>{{$post->category ? $post->category->name : '-'}}</td>
                             <td>{{$post->slug}}</td>
                             <td>{{$post->author}}</td>
                             <td>
