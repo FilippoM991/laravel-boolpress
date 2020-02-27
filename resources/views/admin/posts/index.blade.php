@@ -16,6 +16,7 @@
                             <th>ID</th>
                             <th>Titolo</th>
                             <th>Categoria</th>
+                            <th>Tag</th>
                             <th>Slug</th>
                             <th>Autore</th>
                             <th>Azioni</th>
@@ -29,6 +30,13 @@
                             <td>{{$post->id}}</td>
                             <td>{{$post->title}}</td>
                             <td>{{$post->category ? $post->category->name : '-'}}</td>
+                            <td>
+                                @forelse ($post->tags as $tag)
+                                    {{$tag->name}}{{$loop->last ? '' : ','}}
+                                @empty
+                                    -
+                                @endforelse
+                            </td>
                             <td>{{$post->slug}}</td>
                             <td>{{$post->author}}</td>
                             <td>
